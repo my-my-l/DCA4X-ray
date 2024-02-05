@@ -34,7 +34,6 @@ def main(args:argparse.Namespace):
 
 
 
-    # Data loading code
     train_transform = get_train_transform(args.train_resizing, scale=args.scale, ratio=args.ratio,
                                                 random_horizontal_flip=not args.no_hflip,
                                                 random_color_jitter=False, resize_size=args.resize_size,
@@ -54,7 +53,7 @@ def main(args:argparse.Namespace):
                                      shuffle=True, num_workers=args.workers, drop_last=True)
     train_target_loader = DataLoader(train_target_dataset, batch_size=args.batch_size,
                                      shuffle=True, num_workers=args.workers, drop_last=True)
-    # 扩大推理时的batch_szie
+
     target_val_loader = DataLoader(target_val_dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.workers)
     target_test_loader = DataLoader(target_test_dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.workers)
   
@@ -62,8 +61,7 @@ def main(args:argparse.Namespace):
     train_source_iter = ForeverDataIterator(train_source_loader)
     train_target_iter = ForeverDataIterator(train_target_loader)
     
-    # create model
-    # backbone
+
     G = get_model(pretrain=not args.scratch).to(device)
     pool_layer = nn.Identity() if args.no_pool else None
     F = ImageClassifierHead(G.out_features, args.bottleneck_dim, pool_layer, num_classes=1).to(device)
@@ -230,7 +228,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Unsupervised_Adversarial_Domain_Adaptation_for_Multi-Label_Classification_of_Chest_X-Ray based on multi_label DANN ')
 
 
-    # dataset parameters
     parser.add_argument('root', metavar='DIR',
                         help='root path of dataset')
     parser.add_argument('-s', '--source', default="NIH_CXR14", help='source domain(s)', nargs='+')
